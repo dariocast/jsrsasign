@@ -66,8 +66,10 @@ var sd = rs.KJUR.asn1.cms.CMSUtil.newSignedData({
   }],
 
 });
+console.log(sd)
+console.log(sd.getContentInfoEncodedHex())
 
-rsu.saveFileBinByHex(outFile, sd.getContentInfoEncodedHex());
+// rsu.saveFileBinByHex(outFile, sd.getContentInfoEncodedHex());
 console.log("generate CMS signed data and save to file done.");
 
 

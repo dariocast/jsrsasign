@@ -1492,6 +1492,8 @@ KJUR.asn1.cms.SignedData = function(params) {
      */
     this._setDigestAlgs = function(sdparams) {
 	var pHash = {};
+	// TODO: nel test è questo sinfos che risulta undefined
+	console.log("SINFOS"+sdparams.sinfos)
 	var sinfos = sdparams.sinfos;
 	for (var i = 0; i < sinfos.length; i++) {
 	    var sinfo = sinfos[i];

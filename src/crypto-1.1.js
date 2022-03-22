@@ -1095,6 +1095,7 @@ KJUR.crypto.Signature = function(params) {
      */
     this.setAlgAndProvider = function(alg, prov) {
 	this._setAlgNames();
+    // TODO: Forced use of a specific provider
 	if (prov != 'cryptojs/jsrsa')
 	    throw new Error("provider not supported: " + prov);
 
