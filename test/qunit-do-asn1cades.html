@@ -327,15 +327,16 @@ var hExpect = "30820b4e06092a864886f70d010702a0820b3f30820b3b020101310f300d06096
 
 var _SignedData = KJUR.asn1.cms.SignedData;
 var pBES = KJUR.asn1.cades.CAdESUtil.parseSignedDataForAddingUnsigned(z4sig1);
-pBES.sinfos[0].uattrs = {array: [{attr: "signatureTimeStamp", tst: tstHex}]};
+// pBES.sinfos[0].uattrs = {array: [{attr: "signatureTimeStamp", tst: tstHex}]};
 var hEST = (new _SignedData(pBES)).getContentInfoEncodedHex();
+console.log(hEST)
+// var cades = (new _SignedData(pBES)).getEncodedHex()
 equal(hEST, hExpect, "hex1");
 equal(
 ASN1HEX.dump(hEST),
 ASN1HEX.dump(hExpect),
 "dump1");
 });
-
 });
 -->
 </script>
