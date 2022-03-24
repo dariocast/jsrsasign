@@ -44,6 +44,8 @@ if (program.args.length === 5) hashAlg = program.args[4];
 
 // 1. data to be signed
 var hContent = rsu.readFileHexByBin(textOrFile);
+console.log(hContent);
+
 
 // 2. prv key
 var prvPEM = rsu.readFile(prvFile);
@@ -51,26 +53,77 @@ var prvPEM = rsu.readFile(prvFile);
 // 3. cert file
 var certPEM = rsu.readFile(certFile);
 
-var sd = rs.KJUR.asn1.cms.CMSUtil.newSignedData({
-  content: {hex: hContent},
-  certs: [certPEM],
-  signerInfos: [{
-    hashAlg: 'sha256',
-    sAttr: {
-      SigningTime: {},
-      SigningCertificateV2: {array: [certPEM]}
-    },
-    signerCert: certPEM,
-    sigAlg: 'SHA256withRSA',
-    signerPrvKey: prvPEM
-  }],
+var paramOrg = {
+  version: 1,
+  hashalgs: ["sha256"],
+  econtent: {
+    type: "data",
+    content: {
+      hex: "616161"
+    }
+  },
+  sinfos: [{
+    version: 1,
+    id: {type:'isssn', cert: ''},
+    hashalg: "sha256",
+    sattrs: {array: [{
+      attr: "contentType",
+      type: 'data'
+    },{
+      attr: "messageDigest",
+      hex: 'abcd'
+    }]},
+    sigalg: "SHA256withRSA",
+    signkey: ''
+  }]
+};
 
-});
-console.log(sd)
-console.log(sd.getContentInfoEncodedHex())
+var param = JSON.parse(JSON.stringify(paramOrg)); // deepCopy
+param.sinfos[0].id = {type: 'isssn', cert: certPEM};
+param.sinfos[0].signkey = prvPEM;
+param.certs = [certPEM];
+
+param.econtent.content = {hex: hContent};
+var sattrs = param.sinfos[0].sattrs.array;
+sattrs.push({attr: "signingCertificateV2", array:[certPEM]});
+// sattrs.push({
+//   attr: "signaturePolicyIdentifier",
+//   oid: f1.attr_sigpol_oid.value,
+//   alg: f1.attr_sigpol_hashalg.value,
+//   hash: f1.attr_sigpol_hash.value
+// });
+var hCmsSignedData;
+try {
+  //alert(JSON.stringify(param, '  ', null));
+  var sd = new rs.KJUR.asn1.cms.SignedData(param);
+  hCmsSignedData = sd.getContentInfoEncodedHex();
+} catch (ex) {
+  console.error(ex)
+}
+rsu.saveFileBinByHex(outFile, hCmsSignedData);
+console.log("generate CMS signed data and save to file done.");
+
+
+// var sd = rs.KJUR.asn1.cms.CMSUtil.newSignedData({
+//   content: {hex: hContent},
+//   certs: [certPEM],
+//   signerInfos: [{
+//     hashAlg: 'sha256',
+//     sAttr: {
+//       SigningTime: {},
+//       SigningCertificateV2: {array: [certPEM]}
+//     },
+//     signerCert: certPEM,
+//     sigAlg: 'SHA256withRSA',
+//     signerPrvKey: prvPEM
+//   }],
+
+// });
+// // console.log(sd)
+// console.log(sd.getContentInfoEncodedHex())
 
 // rsu.saveFileBinByHex(outFile, sd.getContentInfoEncodedHex());
-console.log("generate CMS signed data and save to file done.");
+// console.log("generate CMS signed data and save to file done.");
 
 
 
