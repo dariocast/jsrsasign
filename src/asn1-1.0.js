@@ -1,3 +1,6 @@
+var extendClass = require('./base64x-1.1');
+console.log(extendClass);
+
 /* asn1-1.0.23.js (c) 2013-2022 Kenji Urushima | kjur.github.io/jsrsasign/license
  */
 /*

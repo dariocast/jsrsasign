@@ -1746,4 +1746,3 @@ function extendClass(subClass, superClass) {
         superClass.prototype.constructor = superClass;
     }
 };
-

@@ -22,8 +22,11 @@
  */
 
 var program = require('commander');
-var rs = require('jsrsasign');
-var rsu = require('jsrsasign-util');
+// var rs = require('jsrsasign');
+// var rsu = require('jsrsasign-util');
+// var  = require('../src/base64x-1.1');
+require('../npm/lib/jsrsasign-all-min');
+
 var path = require('path');
 
 program
@@ -43,15 +46,14 @@ var hashAlg = "SHA256withRSA";
 if (program.args.length === 5) hashAlg = program.args[4];
 
 // 1. data to be signed
-var hContent = rsu.readFileHexByBin(textOrFile);
+var hContent = readFileHexByBin(textOrFile);
 console.log(hContent);
 
-
 // 2. prv key
-var prvPEM = rsu.readFile(prvFile);
+var prvPEM = readFile(prvFile);
 
 // 3. cert file
-var certPEM = rsu.readFile(certFile);
+var certPEM = readFile(certFile);
 
 var paramOrg = {
   version: 1,
@@ -95,12 +97,12 @@ sattrs.push({attr: "signingCertificateV2", array:[certPEM]});
 var hCmsSignedData;
 try {
   //alert(JSON.stringify(param, '  ', null));
-  var sd = new rs.KJUR.asn1.cms.SignedData(param);
+  var sd = new KJUR.asn1.cms.SignedData(param);
   hCmsSignedData = sd.getContentInfoEncodedHex();
 } catch (ex) {
   console.error(ex)
 }
-rsu.saveFileBinByHex(outFile, hCmsSignedData);
+saveFileBinByHex(outFile, hCmsSignedData);
 console.log("generate CMS signed data and save to file done.");
 
 
